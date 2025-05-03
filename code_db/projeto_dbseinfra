@@ -1,0 +1,51 @@
+CREATE TABLE usuarios (
+    id_user SERIAL PRIMARY KEY,
+    nome VARCHAR(200),
+    telefone VARCHAR(20) NOT NULL,
+    cpf CHAR(14) UNIQUE NOT NULL,
+    senha_hash VARCHAR(60)
+);
+
+CREATE TABLE setores (
+    id_setor SERIAL PRIMARY KEY,
+    nome_setor TEXT CHECK (nome_setor IN ('Iluminacao_publica', 'Arborizacao', 'Limpeza_urbana')) NOT NULL
+);
+
+CREATE TABLE cadastro_colaborador (
+    id_colab SERIAL PRIMARY KEY,
+    nome_colab VARCHAR(200),
+    telefone VARCHAR(20) NOT NULL,
+    senha_colab VARCHAR(60),
+    cargo TEXT CHECK (cargo IN ('administrador', 'Coordenador', 'Colaborador')) NOT NULL,
+    setor_id INT,
+    FOREIGN KEY (setor_id) REFERENCES setores(id_setor)
+);
+
+CREATE TABLE registro_ordens (
+    id_ordem SERIAL PRIMARY KEY,
+    id_solicitante INT,
+    setor_resp INT NOT NULL,
+    endereco TEXT NOT NULL,
+    referencia TEXT,
+    descricao TEXT NOT NULL,
+    status TEXT CHECK (status IN ('Pendente', 'Em_andamento', 'Concluída', 'Cancelada')) NOT NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_solicitante) REFERENCES usuarios(id_user),
+    FOREIGN KEY (setor_resp) REFERENCES setores(id_setor)
+);
+
+CREATE TABLE imagens_ordens (
+    id_imagem SERIAL PRIMARY KEY,
+    id_os INT,
+    caminho_arquivo VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id_os) REFERENCES registro_ordens(id_ordem)
+);
+
+CREATE TABLE atribuicoes (
+    id_atribuicoes SERIAL PRIMARY KEY,
+    ordem INT,
+    id_resp INT,
+    data_atribuicao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ordem) REFERENCES registro_ordens(id_ordem),
+    FOREIGN KEY (id_resp) REFERENCES cadastro_colaborador(id_colab)
+);
