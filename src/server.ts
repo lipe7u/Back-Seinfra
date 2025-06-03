@@ -40,8 +40,6 @@ const start = async () => {
   }
 };
 
-app.post('/teste-rota', async (request, reply) => {
-  return reply.send({ mensagem: 'Funcionando!' });
-});
+
 
 start();

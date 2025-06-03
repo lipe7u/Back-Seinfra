@@ -18,9 +18,8 @@ export interface RegistroAdminB {
 }
 
 export interface SolicitacaoInput {
-  categoriaId?: string
   endereco: string
   pontoReferencia?: string
   descricao: string
-  imagemUrl?: string
+  imagemUrl?: string,
 }

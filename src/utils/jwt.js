@@ -1,23 +1,56 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyToken = exports.signToken = exports.registroJwt = void 0;
-var dotenv = require("dotenv");
+const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-var secret = process.env.JWT_SECRET;
-var registroJwt = function (app) {
+const secret = process.env.JWT_SECRET;
+const registroJwt = (app) => {
     if (!secret) {
         throw new Error("ocorreu um erro no JWT_SECRET");
     }
-    app.register(Promise.resolve().then(function () { return require("fastify-jwt"); }), {
+    app.register(Promise.resolve().then(() => __importStar(require("fastify-jwt"))), {
         secret: secret,
     });
 };
 exports.registroJwt = registroJwt;
-var signToken = function (pl) {
+const signToken = (pl) => {
     return { token: pl };
 };
 exports.signToken = signToken;
-var verifyToken = function (token) {
+const verifyToken = (token) => {
     return token;
 };
 exports.verifyToken = verifyToken;

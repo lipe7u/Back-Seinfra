@@ -12,16 +12,19 @@ export const criarSolicitacao = async (
 ) => {
   try {
     const body = criarSolicitacaoSchema.parse(request.body) as SolicitacaoInput;
-    const setorResponsavel = 1;
+    const {id: id_user} = request.user as {id: number; Admin: boolean}
+    const setorResponsavel = 2;
+    
 
     const solicitacao = await prisma.registro_ordens.create({
       data: {
+        id_solicitante: id_user,
         setor_resp: setorResponsavel,
         endereco: body.endereco,
         referencia: body.pontoReferencia,
         descricao: body.descricao,
         status: "PENDENTE",
-        data_criacao: new Date(),
+        data_criacao: new Date()
       },
     });
 
@@ -33,14 +36,14 @@ export const criarSolicitacao = async (
         },
       });
     }
-
+    
     return reply.status(201).send({
       id: solicitacao.id_ordem,
       mensagem: "Solicitação criada com sucesso",
       solicitacao,
     });
   } catch (error) {
-    const MensagemDeError =
+   const MensagemDeError =
       error instanceof z.ZodError ? error.format() : "Erro ao criar solicitação";
     return reply.status(400).send({ error: MensagemDeError });
   }
