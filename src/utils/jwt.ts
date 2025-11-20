@@ -5,7 +5,7 @@ dotenv.config();
 
 const secret = process.env.JWT_SECRET;
 
-export const registroJwt = (app: FastifyInstance) => {
+export const registerJwt = (app: FastifyInstance) => {
   if (!secret) {
     throw new Error("ocorreu um erro no JWT_SECRET");
   }
