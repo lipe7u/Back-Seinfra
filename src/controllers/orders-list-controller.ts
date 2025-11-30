@@ -85,12 +85,11 @@ export const SolicitarOrdersInfo = async(
 ) => {
   const info = request.query as { mensagem?: string }
 
-  if (info) {
-    if (info.mensagem == "recente") {
-
+  if (info.mensagem == "recente") {
       const parseData = (dataStr: string) => {
         const [dia, mes, ano] = dataStr.split("/");
-        return new Date(`20${ano}-${mes}-${dia}`); // yyyy-mm-dd
+        const anoCompleto = ano.length === 2 ? `20${ano}` : ano;
+        return new Date(`${anoCompleto}-${mes}-${dia}`); // yyyy-mm-dd
       };
 
       ordens_e_servicos.sort((a, b) =>
@@ -110,26 +109,27 @@ export const SolicitarOrdersInfo = async(
       console.log('não recebí nada, tente "{mensagem:concluido}", "mensagem:recente" ou "mensagem:pendente"');
     }
   }
-}
+
+  // if (info.mensagem) {
+
+  //}
 
 
-//const app = express();
+  //const app = express();
+  //app.use(express.json());
 
-// Isso faz o servidor entender JSON
-//app.use(express.json());
+  //app.get('/ordens_retrieve', (req, res) => {
+    //const info = req.body;
 
-//app.get('/ordens_retrieve', (req, res) => {
-  //const info = req.body;
+    // Mostra no terminal o que recebeu 
+    //console.log('Recebi:', info);
 
-  // Mostra no terminal o que recebeu 
-  //console.log('Recebi:', info);
+    
+    
+  //});
 
-  
-  
-//});
-
-// Liga o servidor na porta 3000
-//app.listen(3000, () => {
-  //console.log('http://localhost:3000');
-//});
+  // Liga o servidor na porta 3000
+  //app.listen(3000, () => {
+    //console.log('http://localhost:3000');
+  //});
 
