@@ -109,27 +109,3 @@ export const SolicitarOrdersInfo = async(
       console.log('não recebí nada, tente "{mensagem:concluido}", "mensagem:recente" ou "mensagem:pendente"');
     }
   }
-
-  // if (info.mensagem) {
-
-  //}
-
-
-  //const app = express();
-  //app.use(express.json());
-
-  //app.get('/ordens_retrieve', (req, res) => {
-    //const info = req.body;
-
-    // Mostra no terminal o que recebeu 
-    //console.log('Recebi:', info);
-
-    
-    
-  //});
-
-  // Liga o servidor na porta 3000
-  //app.listen(3000, () => {
-    //console.log('http://localhost:3000');
-  //});
-
