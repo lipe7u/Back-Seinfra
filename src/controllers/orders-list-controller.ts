@@ -1,111 +1,66 @@
 
 import express from 'express';
 import { FastifyReply, FastifyRequest } from 'fastify';
+import { Prisma } from '@prisma/client';
+import { prisma } from "../server";
+import * as bcrypt from "bcryptjs";
+import { number } from 'zod';
 
-let ordens_e_servicos = [
-  {
-    "Categoria":"Iluminação",
-    "Local":"Av.J.Lopes Pedroza",
-    "Problema":"Aqui na minha rua caiu um raio e queimou o poste.",
-    "Data de Solicitação":"20/05/25",
-    "Data de Conclusão":"12/07/25",
-    "Estado":"Em Andamento",
-  }
-  ,
-  {
-    "Categoria":"Iluminação2222",
-    "Local":"Av.J.Lopes Pedroza2",
-    "Problema":"Aqui na minha rua caiu um raio e queimou o poste.2",
-    "Data de Solicitação":"20/04/25",
-    "Data de Conclusão":"12/07/25",
-    "Estado":"Concluido",
-  }
-  ,
-  {
-    "Categoria":"Iluminação2222",
-    "Local":"Av.J.Lopes Pedroza2",
-    "Problema":"Aqui na minha rua caiu um raio e queimou o poste.2",
-    "Data de Solicitação":"10/05/25",
-    "Data de Conclusão":"12/07/25",
-    "Estado":"Em Andamento",
-  }
-  ,
-  {
-    "Categoria":"Iluminação2222",
-    "Local":"Av.J.Lopes Pedroza2",
-    "Problema":"Aqui na minha rua caiu um raio e queimou o poste.2",
-    "Data de Solicitação":"20/02/25",
-    "Data de Conclusão":"12/07/25",
-    "Estado":"Em Andamento",
-  }
-  ,
-  {
-    "Categoria":"Iluminação2222",
-    "Local":"Av.J.Lopes Pedroza2",
-    "Problema":"Aqui na minha rua caiu um raio e queimou o poste.2",
-    "Data de Solicitação":"10/01/25",
-    "Data de Conclusão":"12/07/25",
-    "Estado":"Concluido",
-  }
-  ,
-  {
-    "Categoria":"Iluminação2222",
-    "Local":"Av.J.Lopes Pedroza2",
-    "Problema":"Aqui na minha rua caiu um raio e queimou o poste.2",
-    "Data de Solicitação":"20/05/24",
-    "Data de Conclusão":"12/07/25",
-    "Estado":"Concluido",
-  }
-  ,
-  {
-    "Categoria":"Iluminação2222",
-    "Local":"Av.J.Lopes Pedroza2",
-    "Problema":"Aqui na minha rua caiu um raio e queimou o poste.2",
-    "Data de Solicitação":"20/05/23",
-    "Data de Conclusão":"12/07/25",
-    "Estado":"Em Andamento",
-  }
-  ,
-  {
-    "Categoria":"Iluminação3333",
-    "Local":"Av.J.Lopes 5555",
-    "Problema":"o muro quebrou aqui",
-    "Data de Solicitação":"20/05/21",
-    "Data de Conclusão":"12/07/25",
-    "Estado":"Concluido",
-  }
-  ,
-]
-
-//USO: recente/pendente/concluido no Value
 
 export const SolicitarOrdersInfo = async(
   request: FastifyRequest,
   reply: FastifyReply,
 ) => {
-  const info = request.query as { mensagem?: string }
+  const info = request.query as { mensagem?: string, id_ordem? : number, justificativa?: string };
+  const ordens_e_servicos_bd = await prisma.registro_ordens.findMany();
 
   if (info.mensagem == "recente") {
-      const parseData = (dataStr: string) => {
-        const [dia, mes, ano] = dataStr.split("/");
-        const anoCompleto = ano.length === 2 ? `20${ano}` : ano;
-        return new Date(`${anoCompleto}-${mes}-${dia}`); // yyyy-mm-dd
-      };
+    ordens_e_servicos_bd.sort((a, b) =>
+      new Date(b.data_criacao || 0).getTime() -
+      new Date(a.data_criacao || 0).getTime()
+    );
 
-      ordens_e_servicos.sort((a, b) =>
-        parseData(b["Data de Solicitação"]).getTime() -
-        parseData(a["Data de Solicitação"]).getTime()
-      );
-
-      reply.send(ordens_e_servicos);
-    }
-    else if (info.mensagem == 'pendente') {
-      reply.send(ordens_e_servicos.filter(ordem => ordem.Estado === "Em Andamento"))
-    }
-    else if (info.mensagem == 'concluido') {
-      reply.send(ordens_e_servicos.filter(ordem => ordem.Estado === "Concluido"))
-    }
-    else {
-      console.log('não recebí nada, tente "{mensagem:concluido}", "mensagem:recente" ou "mensagem:pendente"');
-    }
+    reply.send(ordens_e_servicos_bd);
   }
+  else if (info.mensagem == 'pendente') {
+    reply.send(ordens_e_servicos_bd.filter(ordem => ordem.status === "PENDENTE"))
+  }
+  else if (info.mensagem == 'concluido') {
+    reply.send(ordens_e_servicos_bd.filter(ordem => ordem.status === "CONCLUIDO"))
+  }
+  else if (!isNaN(Number(info.mensagem))) {
+    reply.send(ordens_e_servicos_bd.filter(ordem => ordem.id_ordem === Number(info.mensagem)))
+  }
+}
+
+export const CancelarOrdem = async (request: FastifyRequest, reply: FastifyReply) => {
+    const body = request.body as { id_ordem?: number; justificativa?: string };
+
+    if (!body.id_ordem) {
+      reply.status(400).send('é preciso do ID da ordem para cancelar');
+      return;
+    }
+    if (!body.justificativa) {
+      reply.status(400).send('é preciso uma justificativa para cancelar');
+      return;
+    }
+
+    const ordem = await prisma.registro_ordens.findUnique({
+      where: { id_ordem: Number(body.id_ordem) }
+    });
+
+    if (!ordem) {
+      reply.status(404).send('Ordem não encontrada');
+      return;
+    }
+
+    const ordem_cancelada = await prisma.registro_ordens.update({
+      where: { id_ordem: Number(body.id_ordem) },
+      data: {
+        status: "CANCELADO",
+        Justificativa: body.justificativa
+      }
+    });
+
+    reply.send(`ordem "${ordem_cancelada.id_ordem}" de descrição "${ordem_cancelada.descricao}" foi cancelada. -${ordem_cancelada.Justificativa}`);
+};

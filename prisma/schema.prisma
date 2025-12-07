@@ -45,7 +45,8 @@ model registro_ordens {
   descricao      String
   status         String
   data_criacao   DateTime?        @default(now()) @db.Timestamp(6)
-  data_conclusao  DateTime?        @default(now()) @db.Timestamp(6)
+  data_conclusao DateTime?        @default(now()) @db.Timestamp(6)
+  Justificativa  String?
   atribuicoes    atribuicoes[]
   imagens_ordens imagens_ordens[]
   usuarios       usuarios?        @relation(fields: [id_solicitante], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
@@ -66,6 +67,6 @@ model usuarios {
   telefone        String            @db.VarChar(20)
   cpf             String            @unique @db.Char(14)
   senha_hash      String?           @db.VarChar(60)
-  Admin         Boolean           @default(false)
+  Admin           Boolean           @default(false)
   registro_ordens registro_ordens[]
 }
