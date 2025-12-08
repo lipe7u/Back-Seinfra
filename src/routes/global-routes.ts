@@ -7,8 +7,7 @@ import {
   ListarSolicitacoes,
 } from "../controllers/solicitacoes-controller";
 import { generateRequestsPdf } from "../controllers/pdfController";
-import { SolicitarOrdersInfo } from "../controllers/orders-list-controller"
-
+import { SolicitarOrdersInfo } from "../controllers/orders-list-controller";
 
 export default async function GlobalRoutes(app: FastifyInstance) {
   app.post("/registro", register);
