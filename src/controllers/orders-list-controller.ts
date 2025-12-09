@@ -1,25 +1,20 @@
-
-import express from 'express';
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { Prisma } from '@prisma/client';
 import { prisma } from "../server";
-import * as bcrypt from "bcryptjs";
-import { number } from 'zod';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { ordersqueryschema } from "../validators/orders-query";
 
 
 export const SolicitarOrdersInfo = async(
   request: FastifyRequest,
   reply: FastifyReply,
 ) => {
-  const info = request.query as { mensagem?: string, id_ordem? : number, justificativa?: string };
-  const ordens_e_servicos_bd = await prisma.registro_ordens.findMany();
+  const info = ordersqueryschema.parse(request.query);
+  const ordens_e_servicos_bd = await prisma.registro_ordens.findMany({
+    orderBy: {
+      data_criacao: 'desc'
+    }
+  });
 
   if (info.mensagem == "recente") {
-    ordens_e_servicos_bd.sort((a, b) =>
-      new Date(b.data_criacao || 0).getTime() -
-      new Date(a.data_criacao || 0).getTime()
-    );
-
     reply.send(ordens_e_servicos_bd);
   }
   else if (info.mensagem == 'pendente') {
