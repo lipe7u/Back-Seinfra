@@ -23,10 +23,18 @@ app.register(fastifyJwt, {
 app.register(authRoutes);
 
 app.addHook("preHandler", async (request, reply) => {
+  const url_endereco = (request.raw?.url ?? request.url).split("?")[0].replace(/\/$/, "");
+  if (request.method === "GET" 
+    && url_endereco === "/solicitarOrdens"
+  ) {
+    return;
+  }
+
   if (
     request.url !== "/registro" &&
     request.url !== "/login" &&
-    request.url !== "/gerarPDF"
+    request.url !== "/gerarPDF" &&
+    request.url !== "/cancelarOrdem" 
   ) {
     try {
       await request.jwtVerify();
