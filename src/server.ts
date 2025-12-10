@@ -34,6 +34,7 @@ app.addHook("preHandler", async (request, reply) => {
     request.url !== "/login" &&
     request.url !== "/gerarPDF" &&
     request.url !== "/cancelarOrdem"
+
   ) {
     try {
       await request.jwtVerify();
