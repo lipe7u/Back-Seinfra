@@ -21,7 +21,7 @@ app.register(fastifyJwt, {
 app.register(authRoutes);
 
 app.addHook("preHandler", async (request, reply) => {
-  const rota = request.routeOptions.url ?? "";
+  const rota = request.url.split("?")[0];
   const rotasPublicas = [
     "/registro",
     "/login",
