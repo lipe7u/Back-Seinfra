@@ -55,7 +55,7 @@ export class SolicitacoesService {
       },
     });
 
-    const solicitacoesFormatadas: SolicitacaoFormatada[] = solicitacoes.map((s) => ({
+    const solicitacoesFormatadas: SolicitacaoFormatada[] = solicitacoes.map((s: typeof solicitacoes[number]) => ({
       id: s.id_ordem,
       endereco: s.endereco,
       referencia: s.referencia,

@@ -1,6 +1,7 @@
 import { prisma } from "../server";
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { ordersqueryschema } from "../validators/orders-query";
+import { number } from "zod";
 
 
 
@@ -21,13 +22,13 @@ export const SolicitarOrdersInfo = async(
     reply.send(ordens_e_servicos_bd);
   }
   else if (info.mensagem == 'pendente') {
-    reply.send(ordens_e_servicos_bd.filter(ordem => ordem.status === "PENDENTE"))
+    reply.send(ordens_e_servicos_bd.filter((ordem: typeof ordens_e_servicos_bd[number]) => ordem.status === "PENDENTE"))
   }
   else if (info.mensagem == 'concluido') {
-    reply.send(ordens_e_servicos_bd.filter(ordem => ordem.status === "CONCLUIDO"))
+    reply.send(ordens_e_servicos_bd.filter((ordem:typeof ordens_e_servicos_bd[number]) => ordem.status === "CONCLUIDO"))
   }
   else if (!isNaN(Number(info.mensagem))) {
-    reply.send(ordens_e_servicos_bd.filter(ordem => ordem.id_ordem === Number(info.mensagem)))
+    reply.send(ordens_e_servicos_bd.filter((ordem: typeof ordens_e_servicos_bd[number]) => ordem.id_ordem === Number(info.mensagem)))
   }
 }
 
