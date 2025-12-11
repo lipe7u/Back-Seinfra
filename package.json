@@ -1,11 +1,10 @@
 {
   "name": "seinfra-novo",
   "version": "1.0.0",
-  "main": "build/index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "tsx build/index.js",
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc"
+    "start": "tsx src/index.js",
+    "dev": "tsx watch src/server.ts"
   },
   "dependencies": {
     "@fastify/cors": "^11.0.1",
