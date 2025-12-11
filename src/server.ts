@@ -32,7 +32,10 @@ app.addHook("preHandler", async (request, reply) => {
     request.url !== "/registro" &&
     request.url !== "/login" &&
     request.url !== "/gerarPDF" &&
-    request.url !== "/cancelarOrdem"
+    request.url !== "/cancelarOrdem" &&
+    request.url !== "/login-admin" &&
+    request.url !== "/registro-admin"
+    
 
   ) {
     try {
