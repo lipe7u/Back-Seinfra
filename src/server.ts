@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import fastify from "fastify";
 import authRoutes from "./routes/global-routes";
-import { registerJwt } from "./utils/jwt";
 import * as dotenv from "dotenv";
 import fastifyCors from "@fastify/cors";
 import fastifyJwt from "fastify-jwt";

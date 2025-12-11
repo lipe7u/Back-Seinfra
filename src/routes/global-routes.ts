@@ -18,6 +18,7 @@ export default async function GlobalRoutes(app: FastifyInstance) {
   app.get("/minhas-solicitacoes", ListarSolicitacoes);
   app.get("/gerarPdfSolicitacoes", generateRequestsPdf);
   app.get("/solicitarOrdens", SolicitarOrdersInfo);
-  console.log("Rotas de autenticação e solicitação registradas!");
   app.post("/cancelarOrdem", CancelarOrdem);
+  console.log("Rotas de autenticação e solicitação registradas!");
+  
 }
