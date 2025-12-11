@@ -1,11 +1,12 @@
 {
   "name": "seinfra-novo",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx tsc && node build/index.js",
-    "dev": "ts-node src/server.ts"
+    "start": "node build/index.js",
+    "dev": "ts-node src/server.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -23,16 +24,15 @@
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.10.0",
     "pdf-lib": "^1.17.1",
-    "zod": "^3.24.3"
+    "zod": "^3.24.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
   },
   "devDependencies": {
     "@types/node": "^22.13.11",
     "@types/nodemailer": "^6.4.17",
     "prisma": "^6.10.1",
-    "ts-node": "^10.9.2",
-    "tsc": "^2.0.4",
-    "tsx": "^4.19.3",
-    "typescript": "^5.8.2"
+    "tsx": "^4.19.3"
   },
   "description": ""
 }
