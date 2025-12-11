@@ -11,6 +11,11 @@ export interface LoginB {
   senha: string;
 }
 
+export interface LoginAdminB {
+  cpf: string;
+  senha: string;
+}
+
 export interface RegisterAdminB {
   cpf: string; 
   senha: string; 
