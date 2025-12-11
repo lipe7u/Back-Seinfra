@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.loginAdmin = void 0;
+const login_service_1 = require("../services/login-service");
+const loginAdmin = async (request, reply) => {
+    try {
+        const admin = await (0, login_service_1.loginAdminService)(request.body);
+        reply.code(200).send(admin);
+    }
+    catch (error) {
+        const mensagem = error instanceof Error ? error.message : "Erro no login";
+        reply.code(401).send({ error: mensagem });
+    }
+};
+exports.loginAdmin = loginAdmin;
