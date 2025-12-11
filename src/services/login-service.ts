@@ -1,6 +1,6 @@
 import * as bcrypt from "bcryptjs";
 import { FastifyInstance } from "fastify";
-import { LoginB } from "../interface/auth-interfaces";
+import { LoginAdminB, LoginB } from "../interface/auth-interfaces";
 import { prisma } from "../server";
 
 export const loginUserService = async (app: FastifyInstance, data: LoginB) => {
@@ -29,3 +29,19 @@ export const loginUserService = async (app: FastifyInstance, data: LoginB) => {
     throw new Error("Erro ao fazer login");
   }
 };
+
+export const loginAdminService = async (data: LoginAdminB) => {
+    
+  const admin = await prisma.usuarios.findUnique({
+    where: { cpf: data.cpf },
+  });
+  if (!admin || !admin.Admin) {
+    throw new Error("Admin não encontrado");
+  }
+  const senhaValida = await bcrypt.compare(data.senha, admin.senha_hash || "");
+  if (!senhaValida) {
+    throw new Error("Senha incorreta");
+  }
+  return admin
+};
+

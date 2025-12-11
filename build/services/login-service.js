@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUserService = void 0;
+exports.loginAdminService = exports.loginUserService = void 0;
 const bcrypt = __importStar(require("bcryptjs"));
 const server_1 = require("../server");
 const loginUserService = async (app, data) => {
@@ -60,3 +60,17 @@ const loginUserService = async (app, data) => {
     }
 };
 exports.loginUserService = loginUserService;
+const loginAdminService = async (data) => {
+    const admin = await server_1.prisma.usuarios.findUnique({
+        where: { cpf: data.cpf },
+    });
+    if (!admin || !admin.Admin) {
+        throw new Error("Admin não encontrado");
+    }
+    const senhaValida = await bcrypt.compare(data.senha, admin.senha_hash || "");
+    if (!senhaValida) {
+        throw new Error("Senha incorreta");
+    }
+    return admin;
+};
+exports.loginAdminService = loginAdminService;

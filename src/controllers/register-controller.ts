@@ -15,3 +15,4 @@ export const register = async (
     reply.code(400).send({ error: MensagemDeError });
   }
 };
+ 
