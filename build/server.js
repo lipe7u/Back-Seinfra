@@ -37,37 +37,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.prisma = exports.app = void 0;
-const client_1 = require("@prisma/client");
 const fastify_1 = __importDefault(require("fastify"));
-const global_routes_1 = __importDefault(require("./routes/global-routes"));
-const dotenv = __importStar(require("dotenv"));
 const cors_1 = __importDefault(require("@fastify/cors"));
 const fastify_jwt_1 = __importDefault(require("fastify-jwt"));
+const client_1 = require("@prisma/client");
+const dotenv = __importStar(require("dotenv"));
+const global_routes_1 = __importDefault(require("./routes/global-routes"));
 dotenv.config();
 exports.app = (0, fastify_1.default)();
 exports.prisma = new client_1.PrismaClient();
 if (!process.env.JWT_SECRET) {
-    throw new Error("ocorreu um erro no JWT_SECRET");
+    throw new Error("JWT_SECRET não encontrado no .env");
 }
 exports.app.register(fastify_jwt_1.default, {
     secret: process.env.JWT_SECRET,
 });
 exports.app.register(global_routes_1.default);
+// Log básico de requisição
 exports.app.addHook("preHandler", async (request, reply) => {
-    if (request.method === "GET" &&
-        request.url.split("?")[0] === "/solicitarOrdens") {
+    console.log("======== ROTA RECEBIDA ========");
+    console.log("method:", request.method);
+    console.log("url:", request.url);
+    console.log("================================");
+    const rota = request.url.split("?")[0];
+    const rotasPublicas = [
+        "/registro",
+        "/login",
+        "/registro-admin",
+        "/login-admin",
+    ];
+    if (rotasPublicas.includes(rota)) {
         return;
     }
-    if (request.url !== "/registro" &&
-        request.url !== "/login" &&
-        request.url !== "/gerarPDF" &&
-        request.url !== "/cancelarOrdem") {
-        try {
-            await request.jwtVerify();
-        }
-        catch (err) {
-            reply.send(err);
-        }
+    try {
+        await request.jwtVerify();
+    }
+    catch (_a) {
+        return reply.code(401).send({
+            statusCode: 401,
+            error: "Unauthorized",
+            message: "Token inválido ou ausente",
+        });
     }
 });
 exports.app.register(cors_1.default, {
@@ -75,11 +85,11 @@ exports.app.register(cors_1.default, {
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
 });
-const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+const port = Number(process.env.PORT) || 3000;
 const start = async () => {
     try {
         await exports.app.listen({ port, host: "0.0.0.0" });
-        console.log("Servidor rodando em: http://localhost:3000");
+        console.log("Servidor rodando em: http://localhost:${port}");
     }
     catch (err) {
         console.error(err);
