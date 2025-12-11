@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import fastify from "fastify";
 import authRoutes from "./routes/global-routes";
-import { registerJwt } from "./utils/jwt";
 import * as dotenv from "dotenv";
 import fastifyCors from "@fastify/cors";
 import fastifyJwt from "fastify-jwt";
@@ -23,9 +22,8 @@ app.register(fastifyJwt, {
 app.register(authRoutes);
 
 app.addHook("preHandler", async (request, reply) => {
-  const url_endereco = (request.raw?.url ?? request.url).split("?")[0].replace(/\/$/, "");
-  if (request.method === "GET" 
-    && url_endereco === "/solicitarOrdens"
+  if (request.method === "GET" && 
+    request.url.split("?")[0] === "/solicitarOrdens"
   ) {
     return;
   }
@@ -34,7 +32,8 @@ app.addHook("preHandler", async (request, reply) => {
     request.url !== "/registro" &&
     request.url !== "/login" &&
     request.url !== "/gerarPDF" &&
-    request.url !== "/cancelarOrdem" 
+    request.url !== "/cancelarOrdem"
+
   ) {
     try {
       await request.jwtVerify();
