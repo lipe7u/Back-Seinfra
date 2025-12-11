@@ -8,7 +8,6 @@ import fastifyJwt from "fastify-jwt";
 dotenv.config();
 
 export const app = fastify();
-
 export const prisma = new PrismaClient();
 
 if (!process.env.JWT_SECRET) {
@@ -22,24 +21,26 @@ app.register(fastifyJwt, {
 app.register(authRoutes);
 
 app.addHook("preHandler", async (request, reply) => {
-  if (request.method === "GET" && 
-    request.url.split("?")[0] === "/solicitarOrdens"
-  ) {
+  const rota = request.routeOptions.url ?? "";
+  const rotasPublicas = [
+    "/registro",
+    "/login",
+    "/registro-admin",
+    "/login-admin",
+  ];
+
+  if (rotasPublicas.includes(rota)) {
     return;
   }
 
-  if (
-    request.url !== "/registro" &&
-    request.url !== "/login" &&
-    request.url !== "/gerarPDF" &&
-    request.url !== "/cancelarOrdem"
-
-  ) {
-    try {
-      await request.jwtVerify();
-    } catch (err) {
-      reply.send(err);
-    }
+  try {
+    await request.jwtVerify();
+  } catch (err) {
+    return reply.code(401).send({
+      statusCode: 401,
+      error: "Unauthorized",
+      message: "Token inválido ou ausente",
+    });
   }
 });
 
@@ -49,7 +50,8 @@ app.register(fastifyCors, {
   allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
 });
 
-const port = process.env.PORT ? parseInt(process.env.PORT): 3000;
+const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+
 const start = async () => {
   try {
     await app.listen({ port, host: "0.0.0.0" });
