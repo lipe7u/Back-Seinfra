@@ -75,9 +75,10 @@ exports.app.register(cors_1.default, {
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
 });
+const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 const start = async () => {
     try {
-        await exports.app.listen({ port: 3000 });
+        await exports.app.listen({ port, host: "0.0.0.0" });
         console.log("Servidor rodando em: http://localhost:3000");
     }
     catch (err) {
