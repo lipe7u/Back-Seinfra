@@ -1,9 +1,9 @@
 {
   "name": "seinfra-novo",
   "version": "1.0.0",
-  "main": "build/index.js",
+  "main": "build/server.js",
   "scripts": {
-    "start": "node build/index.js",
+    "start": "node build/server.js",
     "dev": "ts-node src/server.ts",
     "build": "tsc"
   },
