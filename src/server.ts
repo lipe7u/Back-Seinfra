@@ -21,6 +21,12 @@ app.register(fastifyJwt, {
 app.register(authRoutes);
 
 app.addHook("preHandler", async (request, reply) => {
+  console.log("======== ROTA RECEBIDA ========");
+  console.log("method:", request.method);
+  console.log("url:", request.url);
+  console.log("routeOptions:", request.routeOptions?.url);
+  console.log("================================");
+
   const rota = request.url.split("?")[0];
   const rotasPublicas = [
     "/registro",
