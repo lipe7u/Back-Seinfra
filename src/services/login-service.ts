@@ -30,8 +30,7 @@ export const loginUserService = async (app: FastifyInstance, data: LoginB) => {
   }
 };
 
-export const loginAdminService = async (data: LoginAdminB) => {
-    
+export const loginAdminService = async (app: FastifyInstance, data: LoginAdminB) => {
   const admin = await prisma.usuarios.findUnique({
     where: { cpf: data.cpf },
   });
@@ -42,6 +41,7 @@ export const loginAdminService = async (data: LoginAdminB) => {
   if (!senhaValida) {
     throw new Error("Senha incorreta");
   }
-  return admin
+  const token = app.jwt.sign({id: admin.id_user, Admin: admin.Admin})
+  return token
 };
 

@@ -7,8 +7,8 @@ export const loginAdmin = async (
   reply: FastifyReply
 ) => {
   try {
-    const admin = await loginAdminService(request.body);
-    reply.code(200).send(admin);
+    const token = await loginAdminService(reply.server, request.body);
+    reply.code(200).send(token);
   } catch (error) {
     const mensagem = error instanceof Error ? error.message : "Erro no login";
     reply.code(401).send({ error: mensagem });
