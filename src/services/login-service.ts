@@ -23,7 +23,7 @@ export const loginUserService = async (app: FastifyInstance, data: LoginB) => {
     }
 
     const token = app.jwt.sign({ id: user.id_user, Admin: user.Admin });
-    return token;
+    return {token};
   } catch (error) {
     console.error("Erro ao fazer login:", error);
     throw new Error("Erro ao fazer login");
@@ -42,6 +42,6 @@ export const loginAdminService = async (app: FastifyInstance, data: LoginAdminB)
     throw new Error("Senha incorreta");
   }
   const token = app.jwt.sign({id: admin.id_user, Admin: admin.Admin})
-  return token
+  return {token}
 };
 
