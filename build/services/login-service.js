@@ -60,7 +60,7 @@ const loginUserService = async (app, data) => {
     }
 };
 exports.loginUserService = loginUserService;
-const loginAdminService = async (data) => {
+const loginAdminService = async (app, data) => {
     const admin = await server_1.prisma.usuarios.findUnique({
         where: { cpf: data.cpf },
     });
@@ -71,6 +71,7 @@ const loginAdminService = async (data) => {
     if (!senhaValida) {
         throw new Error("Senha incorreta");
     }
-    return admin;
+    const token = app.jwt.sign({ id: admin.id_user, Admin: admin.Admin });
+    return token;
 };
 exports.loginAdminService = loginAdminService;

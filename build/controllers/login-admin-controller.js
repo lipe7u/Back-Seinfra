@@ -4,8 +4,8 @@ exports.loginAdmin = void 0;
 const login_service_1 = require("../services/login-service");
 const loginAdmin = async (request, reply) => {
     try {
-        const admin = await (0, login_service_1.loginAdminService)(request.body);
-        reply.code(200).send(admin);
+        const token = await (0, login_service_1.loginAdminService)(reply.server, request.body);
+        reply.code(200).send(token);
     }
     catch (error) {
         const mensagem = error instanceof Error ? error.message : "Erro no login";
