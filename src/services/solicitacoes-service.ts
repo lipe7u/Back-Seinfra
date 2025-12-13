@@ -39,6 +39,7 @@ export class SolicitacoesService {
     const solicitacoes = await prisma.registro_ordens.findMany({
       where: {
         id_solicitante: userId,
+        
       },
       select: {
         id_ordem: true,
@@ -49,6 +50,14 @@ export class SolicitacoesService {
         status: true,
         data_criacao: true,
         data_conclusao: true,
+
+        usuarios: {
+          select : {
+            nome: true,
+            telefone: true,
+            cpf: true, 
+          }
+        }
       },
       orderBy: {
         data_criacao: "desc",
@@ -57,6 +66,11 @@ export class SolicitacoesService {
 
     const solicitacoesFormatadas: SolicitacaoFormatada[] = solicitacoes.map((s: typeof solicitacoes[number]) => ({
       id: s.id_ordem,
+      solicitante: {
+        nome: s.usuarios?.nome ?? null,
+        telefone: s.usuarios?.telefone ?? null,
+        cpf: s.usuarios?.cpf ?? null,
+      },
       endereco: s.endereco,
       referencia: s.referencia,
       problema: s.descricao.slice(0, 200) + (s.descricao.length > 200 ? "..." : ""),
