@@ -45,21 +45,33 @@ class SolicitacoesService {
                 status: true,
                 data_criacao: true,
                 data_conclusao: true,
+                usuarios: {
+                    select: {
+                        nome: true,
+                        telefone: true,
+                        cpf: true,
+                    }
+                }
             },
             orderBy: {
                 data_criacao: "desc",
             },
         });
         const solicitacoesFormatadas = solicitacoes.map((s) => {
-            var _a, _b;
+            var _a, _b, _c, _d, _e, _f, _g, _h;
             return ({
                 id: s.id_ordem,
+                solicitante: {
+                    nome: (_b = (_a = s.usuarios) === null || _a === void 0 ? void 0 : _a.nome) !== null && _b !== void 0 ? _b : null,
+                    telefone: (_d = (_c = s.usuarios) === null || _c === void 0 ? void 0 : _c.telefone) !== null && _d !== void 0 ? _d : null,
+                    cpf: (_f = (_e = s.usuarios) === null || _e === void 0 ? void 0 : _e.cpf) !== null && _f !== void 0 ? _f : null,
+                },
                 endereco: s.endereco,
                 referencia: s.referencia,
                 problema: s.descricao.slice(0, 200) + (s.descricao.length > 200 ? "..." : ""),
                 status: this.formatarStatus(s.status),
                 dataSolicitacao: s.data_criacao ? s.data_criacao.toLocaleDateString("pt-BR") : null,
-                dataConclusao: (_b = (_a = s.data_conclusao) === null || _a === void 0 ? void 0 : _a.toLocaleDateString("pt-BR")) !== null && _b !== void 0 ? _b : null,
+                dataConclusao: (_h = (_g = s.data_conclusao) === null || _g === void 0 ? void 0 : _g.toLocaleDateString("pt-BR")) !== null && _h !== void 0 ? _h : null,
             });
         });
         return solicitacoesFormatadas;
