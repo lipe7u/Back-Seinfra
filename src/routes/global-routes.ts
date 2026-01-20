@@ -9,6 +9,7 @@ import {
 import { generateRequestsPdf } from "../controllers/pdfController";
 import { CancelarOrdem } from "../controllers/orders-list-controller";
 import { SolicitarOrdersInfo } from "../controllers/orders-list-controller";
+import { AlterarStatusOrdem } from "../controllers/orders-list-controller";
 import { loginAdmin } from "../controllers/login-admin-controller";
 
 export default async function GlobalRoutes(app: FastifyInstance) {
@@ -20,6 +21,7 @@ export default async function GlobalRoutes(app: FastifyInstance) {
   app.get("/gerarPdfSolicitacoes", generateRequestsPdf);
   app.get("/solicitarOrdens", SolicitarOrdersInfo);
   app.post("/cancelarOrdem", CancelarOrdem);
+  app.post("/alterarStatusOrdem", AlterarStatusOrdem)
   app.post("/login-admin", loginAdmin)
   console.log("Rotas de autenticação e solicitação registradas!");
   

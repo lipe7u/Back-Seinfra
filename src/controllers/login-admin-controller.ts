@@ -13,4 +13,4 @@ export const loginAdmin = async (
     const mensagem = error instanceof Error ? error.message : "Erro no login";
     reply.code(401).send({ error: mensagem });
   }
-};
+}; 
