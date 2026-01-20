@@ -8,6 +8,7 @@ const solicitacoes_controller_1 = require("../controllers/solicitacoes-controlle
 const pdfController_1 = require("../controllers/pdfController");
 const orders_list_controller_1 = require("../controllers/orders-list-controller");
 const orders_list_controller_2 = require("../controllers/orders-list-controller");
+const orders_list_controller_3 = require("../controllers/orders-list-controller");
 const login_admin_controller_1 = require("../controllers/login-admin-controller");
 async function GlobalRoutes(app) {
     app.post("/registro", register_controller_1.register);
@@ -18,6 +19,7 @@ async function GlobalRoutes(app) {
     app.get("/gerarPdfSolicitacoes", pdfController_1.generateRequestsPdf);
     app.get("/solicitarOrdens", orders_list_controller_2.SolicitarOrdersInfo);
     app.post("/cancelarOrdem", orders_list_controller_1.CancelarOrdem);
+    app.post("/alterarStatusOrdem", orders_list_controller_3.AlterarStatusOrdem);
     app.post("/login-admin", login_admin_controller_1.loginAdmin);
     console.log("Rotas de autenticação e solicitação registradas!");
 }
