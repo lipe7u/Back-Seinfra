@@ -14,7 +14,16 @@ export const SolicitarOrdersInfo = async(
   const ordens_e_servicos_bd = await prisma.registro_ordens.findMany({
     orderBy: {
       data_criacao: 'desc'
-    }
+    },
+    include: {
+      usuarios: {
+        select: {
+          nome: true,
+          telefone: true,
+          cpf: true,
+        },
+      },
+    },
   });
 
   if (info.mensagem == "recente") {

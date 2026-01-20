@@ -8,7 +8,16 @@ const SolicitarOrdersInfo = async (request, reply) => {
     const ordens_e_servicos_bd = await server_1.prisma.registro_ordens.findMany({
         orderBy: {
             data_criacao: 'desc'
-        }
+        },
+        include: {
+            usuarios: {
+                select: {
+                    nome: true,
+                    telefone: true,
+                    cpf: true,
+                },
+            },
+        },
     });
     if (info.mensagem == "recente") {
         reply.send(ordens_e_servicos_bd);
