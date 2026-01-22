@@ -7,9 +7,7 @@ export const generateRequestsPdf = async (
   reply: FastifyReply
 ) => {
   try {
-    const { id: id_user } = request.user as { id: number; Admin: boolean };
-
-    // 🔹 Datas obrigatórias (input type="date")
+    // 🔹 Datas obrigatórias
     const { dataInicio, dataFim } = request.query as {
       dataInicio: string;
       dataFim: string;
@@ -21,14 +19,13 @@ export const generateRequestsPdf = async (
       });
     }
 
-    // 🔹 Ajuste correto para DateTime do PostgreSQL
+    // 🔹 Ajuste correto das datas
     const inicio = new Date(`${dataInicio}T00:00:00`);
     const fim = new Date(`${dataFim}T23:59:59.999`);
 
-    // 🔹 Consulta alinhada ao schema registro_ordens
+    // 🔹 Busca TODAS as OS FINALIZADAS no período
     const solicitacoes = await prisma.registro_ordens.findMany({
       where: {
-        id_solicitante: id_user,
         status: "FINALIZADA",
         data_criacao: {
           gte: inicio,
@@ -46,6 +43,13 @@ export const generateRequestsPdf = async (
         status: true,
         data_criacao: true,
         data_conclusao: true,
+        usuarios: {
+          select: {
+            nome: true,
+            cpf: true,
+            telefone: true,
+          },
+        },
       },
     });
 
@@ -53,19 +57,6 @@ export const generateRequestsPdf = async (
       return reply.status(404).send({
         error: "Nenhuma solicitação encontrada no período informado.",
       });
-    }
-
-    const usuario = await prisma.usuarios.findUnique({
-      where: { id_user },
-      select: {
-        nome: true,
-        cpf: true,
-        telefone: true,
-      },
-    });
-
-    if (!usuario) {
-      return reply.status(404).send({ error: "Usuário não encontrado." });
     }
 
     // ================= PDF =================
@@ -89,15 +80,19 @@ export const generateRequestsPdf = async (
         y -= size + 6;
       };
 
-      drawText("Relatório de Solicitação Finalizada", 18);
+      drawText("Relatório de Ordem de Serviço Finalizada", 18);
       y -= 10;
 
-      drawText(`Nome: ${usuario.nome ?? "Não informado"}`);
-      drawText(`CPF: ${usuario.cpf}`);
-      drawText(`Telefone: ${usuario.telefone}`);
+      // 🔹 Dados do solicitante
+      drawText(`Nome: ${solicitacao.usuarios?.nome ?? "Não informado"}`);
+      drawText(`CPF: ${solicitacao.usuarios?.cpf ?? "Não informado"}`);
+      drawText(
+        `Telefone: ${solicitacao.usuarios?.telefone ?? "Não informado"}`
+      );
       y -= 10;
 
-      drawText(`ID da Ordem: ${solicitacao.id_ordem}`);
+      // 🔹 Dados da OS
+      drawText(`ID da OS: ${solicitacao.id_ordem}`);
       drawText(`Endereço: ${solicitacao.endereco}`);
       drawText(`Referência: ${solicitacao.referencia ?? "Não informado"}`);
       drawText(`Descrição: ${solicitacao.descricao}`);
@@ -123,7 +118,7 @@ export const generateRequestsPdf = async (
     reply.header("Content-Type", "application/pdf");
     reply.header(
       "Content-Disposition",
-      "attachment; filename=relatorio_solicitacoes.pdf"
+      "attachment; filename=relatorio_os_finalizadas.pdf"
     );
 
     return reply.send(pdfBytes);
