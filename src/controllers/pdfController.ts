@@ -26,7 +26,7 @@ export const generateRequestsPdf = async (
     // 🔹 Busca TODAS as OS FINALIZADAS no período
     const solicitacoes = await prisma.registro_ordens.findMany({
       where: {
-        status: "FINALIZADA",
+        status: "CONCLUIDO",
         data_criacao: {
           gte: inicio,
           lte: fim,
