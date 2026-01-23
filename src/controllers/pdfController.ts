@@ -7,7 +7,6 @@ export const generateRequestsPdf = async (
   reply: FastifyReply
 ) => {
   try {
-    // 🔹 Datas obrigatórias
     const { dataInicio, dataFim } = request.query as {
       dataInicio: string;
       dataFim: string;
@@ -19,11 +18,9 @@ export const generateRequestsPdf = async (
       });
     }
 
-    // 🔹 Ajuste correto das datas
     const inicio = new Date(`${dataInicio}T00:00:00.000Z`);
     const fim = new Date(`${dataFim}T23:59:59.999Z`);
 
-    // 🔹 Busca TODAS as OS FINALIZADAS no período
     const solicitacoes = await prisma.registro_ordens.findMany({
       where: {
         status: "CONCLUIDO",
@@ -64,34 +61,41 @@ export const generateRequestsPdf = async (
     const font = await pdfDoc.embedFont(StandardFonts.TimesRoman);
     const corPreta = rgb(0, 0, 0);
 
+    let page = pdfDoc.addPage();
+    let { height } = page.getSize();
+    let y = height - 50;
+
+    const margemInferior = 50;
+
+    const drawText = (text: string, size = 12) => {
+      if (y < margemInferior) {
+        page = pdfDoc.addPage();
+        ({ height } = page.getSize());
+        y = height - 50;
+      }
+
+      page.drawText(text, {
+        x: 30,
+        y,
+        size,
+        font,
+        color: corPreta,
+      });
+
+      y -= size + 6;
+    };
+
     for (const solicitacao of solicitacoes) {
-      const page = pdfDoc.addPage();
-      const { height } = page.getSize();
-      let y = height - 50;
+      drawText("Relatório de Ordem de Serviço Finalizada", 16);
+      y -= 8;
 
-      const drawText = (text: string, size = 12) => {
-        page.drawText(text, {
-          x: 30,
-          y,
-          size,
-          font,
-          color: corPreta,
-        });
-        y -= size + 6;
-      };
-
-      drawText("Relatório de Ordem de Serviço Finalizada", 18);
-      y -= 10;
-
-      // 🔹 Dados do solicitante
       drawText(`Nome: ${solicitacao.usuarios?.nome ?? "Não informado"}`);
       drawText(`CPF: ${solicitacao.usuarios?.cpf ?? "Não informado"}`);
       drawText(
         `Telefone: ${solicitacao.usuarios?.telefone ?? "Não informado"}`
       );
-      y -= 10;
+      y -= 6;
 
-      // 🔹 Dados da OS
       drawText(`ID da OS: ${solicitacao.id_ordem}`);
       drawText(`Endereço: ${solicitacao.endereco}`);
       drawText(`Referência: ${solicitacao.referencia ?? "Não informado"}`);
@@ -111,6 +115,8 @@ export const generateRequestsPdf = async (
             : "Não concluída"
         }`
       );
+
+      y -= 15;
     }
 
     const pdfBytes = await pdfDoc.save();
