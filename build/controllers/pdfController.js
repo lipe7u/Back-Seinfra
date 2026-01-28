@@ -70,14 +70,20 @@ const generateRequestsPdf = async (request, reply) => {
             });
             y -= size + 6;
         };
+        // ===== Cabeçalho do relatório (UMA VEZ) =====
+        drawText("RELATÓRIO DE ORDENS DE SERVIÇO CONCLUÍDAS", 16);
+        y -= 4;
+        drawText(`Período: ${new Date(dataInicio).toLocaleDateString("pt-BR")} a ${new Date(dataFim).toLocaleDateString("pt-BR")}`, 12);
+        y -= 20;
+        // ===== Lista contínua de OS =====
         for (const solicitacao of solicitacoes) {
-            drawText("Relatório de Ordem de Serviço Finalizada", 16);
-            y -= 8;
-            drawText(`Nome: ${(_b = (_a = solicitacao.usuarios) === null || _a === void 0 ? void 0 : _a.nome) !== null && _b !== void 0 ? _b : "Não informado"}`);
+            drawText("--------------------------------------------------");
+            drawText(`OS Nº: ${solicitacao.id_ordem}`, 13);
+            y -= 4;
+            drawText(`Solicitante: ${(_b = (_a = solicitacao.usuarios) === null || _a === void 0 ? void 0 : _a.nome) !== null && _b !== void 0 ? _b : "Não informado"}`);
             drawText(`CPF: ${(_d = (_c = solicitacao.usuarios) === null || _c === void 0 ? void 0 : _c.cpf) !== null && _d !== void 0 ? _d : "Não informado"}`);
             drawText(`Telefone: ${(_f = (_e = solicitacao.usuarios) === null || _e === void 0 ? void 0 : _e.telefone) !== null && _f !== void 0 ? _f : "Não informado"}`);
             y -= 6;
-            drawText(`ID da OS: ${solicitacao.id_ordem}`);
             drawText(`Endereço: ${solicitacao.endereco}`);
             drawText(`Referência: ${(_g = solicitacao.referencia) !== null && _g !== void 0 ? _g : "Não informado"}`);
             drawText(`Descrição: ${solicitacao.descricao}`);
@@ -87,9 +93,10 @@ const generateRequestsPdf = async (request, reply) => {
                 : "-"}`);
             drawText(`Data de Conclusão: ${solicitacao.data_conclusao
                 ? solicitacao.data_conclusao.toLocaleDateString("pt-BR")
-                : "Não concluída"}`);
-            y -= 15;
+                : "Não informada"}`);
+            y -= 12;
         }
+        drawText("--------------------------------------------------");
         const pdfBytes = await pdfDoc.save();
         reply.header("Content-Type", "application/pdf");
         reply.header("Content-Disposition", "attachment; filename=relatorio_os_finalizadas.pdf");

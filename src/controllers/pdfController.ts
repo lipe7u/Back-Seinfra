@@ -85,22 +85,40 @@ export const generateRequestsPdf = async (
       y -= size + 6;
     };
 
-    for (const solicitacao of solicitacoes) {
-      drawText("Relatório de Ordem de Serviço Finalizada", 16);
-      y -= 8;
+    // ===== Cabeçalho do relatório (UMA VEZ) =====
+    drawText("RELATÓRIO DE ORDENS DE SERVIÇO CONCLUÍDAS", 16);
+    y -= 4;
+    drawText(
+      `Período: ${new Date(dataInicio).toLocaleDateString("pt-BR")} a ${new Date(
+        dataFim
+      ).toLocaleDateString("pt-BR")}`,
+      12
+    );
 
-      drawText(`Nome: ${solicitacao.usuarios?.nome ?? "Não informado"}`);
+    y -= 20;
+
+    // ===== Lista contínua de OS =====
+    for (const solicitacao of solicitacoes) {
+      drawText("--------------------------------------------------");
+
+      drawText(`OS Nº: ${solicitacao.id_ordem}`, 13);
+      y -= 4;
+
+      drawText(
+        `Solicitante: ${solicitacao.usuarios?.nome ?? "Não informado"}`
+      );
       drawText(`CPF: ${solicitacao.usuarios?.cpf ?? "Não informado"}`);
       drawText(
         `Telefone: ${solicitacao.usuarios?.telefone ?? "Não informado"}`
       );
+
       y -= 6;
 
-      drawText(`ID da OS: ${solicitacao.id_ordem}`);
       drawText(`Endereço: ${solicitacao.endereco}`);
       drawText(`Referência: ${solicitacao.referencia ?? "Não informado"}`);
       drawText(`Descrição: ${solicitacao.descricao}`);
       drawText(`Status: ${solicitacao.status}`);
+
       drawText(
         `Data de Criação: ${
           solicitacao.data_criacao
@@ -108,16 +126,19 @@ export const generateRequestsPdf = async (
             : "-"
         }`
       );
+
       drawText(
         `Data de Conclusão: ${
           solicitacao.data_conclusao
             ? solicitacao.data_conclusao.toLocaleDateString("pt-BR")
-            : "Não concluída"
+            : "Não informada"
         }`
       );
 
-      y -= 15;
+      y -= 12;
     }
+
+    drawText("--------------------------------------------------");
 
     const pdfBytes = await pdfDoc.save();
 
