@@ -18,8 +18,8 @@ export const generateRequestsPdf = async (
       });
     }
 
-    const inicio = new Date(`${dataInicio}T00:00:00.000Z`);
-    const fim = new Date(`${dataFim}T23:59:59.999Z`);
+    const inicio = new Date(`${dataInicio}T00:00:00.000`);
+    const fim = new Date(`${dataFim}T23:59:59.999`);
 
     const solicitacoes = await prisma.registro_ordens.findMany({
       where: {
