@@ -36,12 +36,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerAdminService = exports.registerUserService = void 0;
 const bcrypt = __importStar(require("bcryptjs"));
 const server_1 = require("../server");
+const cpf_validation_1 = require("../utils/cpf-validation");
 const registerUserService = async (data) => {
     try {
+        const cpfLimpo = data.cpf.replace(/\D/g, '');
+        if (!(0, cpf_validation_1.validarCPF)(cpfLimpo)) {
+            throw new Error("CPF INVALIDO");
+        }
+        const existeCpf = await server_1.prisma.usuarios.findUnique({
+            where: { cpf: cpfLimpo },
+        });
+        if (existeCpf) {
+            throw new Error("CPF já cadastrado");
+        }
         const senhaHashed = await bcrypt.hash(data.senha, 10);
         const user = await server_1.prisma.usuarios.create({
             data: {
-                cpf: data.cpf,
+                cpf: cpfLimpo,
                 nome: data.nome,
                 telefone: data.telefone,
                 senha_hash: senhaHashed,
@@ -57,10 +68,20 @@ const registerUserService = async (data) => {
 exports.registerUserService = registerUserService;
 const registerAdminService = async (data) => {
     try {
+        const cpfLimpo = data.cpf.replace(/\D/g, '');
+        if (!(0, cpf_validation_1.validarCPF)(cpfLimpo)) {
+            throw new Error("CPF INVALIDO");
+        }
+        const existeCpf = await server_1.prisma.usuarios.findUnique({
+            where: { cpf: cpfLimpo },
+        });
+        if (existeCpf) {
+            throw new Error("CPF já cadastrado");
+        }
         const senhaHashed = await bcrypt.hash(data.senha, 10);
         const admin = await server_1.prisma.usuarios.create({
             data: {
-                cpf: data.cpf,
+                cpf: cpfLimpo,
                 senha_hash: senhaHashed,
                 telefone: data.telefone,
                 Admin: true,
