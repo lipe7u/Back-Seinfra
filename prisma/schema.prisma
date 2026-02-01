@@ -65,7 +65,7 @@ model usuarios {
   id_user         Int               @id @default(autoincrement())
   nome            String?           @db.VarChar(200)
   telefone        String            @db.VarChar(20)
-  cpf             String            @unique @db.Char(14)
+  cpf             String            @unique @db.Char(11)
   senha_hash      String?           @db.VarChar(60)
   Admin           Boolean           @default(false)
   registro_ordens registro_ordens[]
