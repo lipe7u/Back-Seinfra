@@ -1,6 +1,7 @@
 import fastify from "fastify";
 import fastifyCors from "@fastify/cors";
 import fastifyJwt from "fastify-jwt";
+import fastifyCookie from "@fastify/cookie";
 import { PrismaClient } from "@prisma/client";
 import * as dotenv from "dotenv";
 
@@ -15,8 +16,14 @@ if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET não encontrado no .env");
 }
 
+app.register(fastifyCookie)
+
 app.register(fastifyJwt, {
   secret: process.env.JWT_SECRET,
+  cookie: {
+    cookieName: "token",
+    signed: false
+  }
 });
 
 app.register(authRoutes);
@@ -53,9 +60,8 @@ app.addHook("preHandler", async (request, reply) => {
 });
 
 app.register(fastifyCors, {
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
+  origin: true,
+  credentials: true
 });
 
 const port = Number(process.env.PORT) || 3000;

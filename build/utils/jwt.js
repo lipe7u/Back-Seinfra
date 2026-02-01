@@ -41,9 +41,6 @@ const registerJwt = (app) => {
     if (!secret) {
         throw new Error("ocorreu um erro no JWT_SECRET");
     }
-    app.register(Promise.resolve().then(() => __importStar(require("fastify-jwt"))), {
-        secret: secret,
-    });
 };
 exports.registerJwt = registerJwt;
 const signToken = (pl) => {
