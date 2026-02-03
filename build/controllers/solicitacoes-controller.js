@@ -15,9 +15,7 @@ const CriarSolicitacao = async (request, reply) => {
         return reply.status(201).send(resultado);
     }
     catch (error) {
-        const MensagemDeError = error instanceof zod_1.z.ZodError
-            ? error.format()
-            : "Erro ao criar solicitação";
+        const MensagemDeError = error instanceof zod_1.z.ZodError;
         return reply.status(400).send({ error: MensagemDeError });
     }
 };

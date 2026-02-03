@@ -22,9 +22,6 @@ export const CriarSolicitacao = async (
           
     } catch (error) {
       const MensagemDeError = error instanceof z.ZodError
-          ? error.format()
-          : "Erro ao criar solicitação";
-    
       return reply.status(400).send({ error: MensagemDeError });
   }
 };
