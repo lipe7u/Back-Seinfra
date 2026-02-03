@@ -53,7 +53,6 @@ exports.app.register(fastify_jwt_1.default, {
     secret: process.env.JWT_SECRET,
 });
 exports.app.register(global_routes_1.default);
-// Log básico de requisição
 exports.app.addHook("preHandler", async (request, reply) => {
     console.log("======== ROTA RECEBIDA ========");
     console.log("method:", request.method);
