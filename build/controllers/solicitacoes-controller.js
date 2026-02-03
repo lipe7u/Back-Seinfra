@@ -15,8 +15,23 @@ const CriarSolicitacao = async (request, reply) => {
         return reply.status(201).send(resultado);
     }
     catch (error) {
-        const MensagemDeError = error instanceof zod_1.z.ZodError;
-        return reply.status(400).send({ error: MensagemDeError });
+        if (error instanceof zod_1.z.ZodError) {
+            return reply.status(400).send({
+                codigo: "VALIDATION_ERROR",
+                mensagem: "Os dados enviados não estão no formato esperado.",
+                detalhes: error.errors.map(e => ({
+                    campo: e.path.join("."),
+                    mensagem: e.message,
+                    tipoErro: e.code
+                }))
+            });
+        }
+        return reply.status(500).send({
+            codigo: "INTERNAL_SERVER_ERROR",
+            mensagem: "Ocorreu um erro inesperado ao processar sua solicitação.",
+            detalhes: error instanceof Error ? error.message : String(error),
+            sugestao: "Tente novamente mais tarde ou entre em contato com o suporte."
+        });
     }
 };
 exports.CriarSolicitacao = CriarSolicitacao;
