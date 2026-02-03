@@ -21,7 +21,7 @@ app.register(fastifyJwt, {
 
 app.register(authRoutes);
 
-// Log básico de requisição
+
 app.addHook("preHandler", async (request, reply) => {
   console.log("======== ROTA RECEBIDA ========");
   console.log("method:", request.method);
