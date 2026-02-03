@@ -40,6 +40,7 @@ exports.prisma = exports.app = void 0;
 const fastify_1 = __importDefault(require("fastify"));
 const cors_1 = __importDefault(require("@fastify/cors"));
 const fastify_jwt_1 = __importDefault(require("fastify-jwt"));
+const cookie_1 = __importDefault(require("@fastify/cookie"));
 const client_1 = require("@prisma/client");
 const dotenv = __importStar(require("dotenv"));
 const global_routes_1 = __importDefault(require("./routes/global-routes"));
@@ -49,10 +50,16 @@ exports.prisma = new client_1.PrismaClient();
 if (!process.env.JWT_SECRET) {
     throw new Error("JWT_SECRET não encontrado no .env");
 }
+exports.app.register(cookie_1.default);
 exports.app.register(fastify_jwt_1.default, {
     secret: process.env.JWT_SECRET,
+    cookie: {
+        cookieName: "token",
+        signed: false
+    }
 });
 exports.app.register(global_routes_1.default);
+// Log básico de requisição
 exports.app.addHook("preHandler", async (request, reply) => {
     console.log("======== ROTA RECEBIDA ========");
     console.log("method:", request.method);
@@ -80,9 +87,8 @@ exports.app.addHook("preHandler", async (request, reply) => {
     }
 });
 exports.app.register(cors_1.default, {
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
+    origin: true,
+    credentials: true
 });
 const port = Number(process.env.PORT) || 3000;
 const start = async () => {
