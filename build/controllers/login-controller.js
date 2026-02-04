@@ -10,7 +10,7 @@ const login = async (request, reply) => {
             secure: true,
             maxAge: 24 * 60 * 60,
             sameSite: "lax",
-            path: "/login",
+            path: "/",
         }).send({ success: true });
     }
     catch (error) {
