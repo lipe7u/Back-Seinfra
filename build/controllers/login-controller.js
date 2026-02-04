@@ -7,7 +7,7 @@ const login = async (request, reply) => {
         const token = await (0, login_service_1.loginUserService)(reply.server, request.body);
         reply.setCookie("token", token, {
             httpOnly: true,
-            secure: false,
+            secure: true,
             maxAge: 24 * 60 * 60,
             sameSite: "lax",
             path: "/",
