@@ -9,7 +9,7 @@ const loginAdmin = async (request, reply) => {
             httpOnly: true,
             secure: true,
             maxAge: 24 * 60 * 60,
-            sameSite: "lax",
+            sameSite: "none",
             path: "/",
         }).send({ success: true });
     }

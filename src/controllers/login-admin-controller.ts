@@ -13,7 +13,7 @@ export const loginAdmin = async (
       httpOnly: true,
       secure: true,
       maxAge: 24 * 60 * 60,
-      sameSite: "lax",
+      sameSite: "none",
       path: "/",
     }).send({ success:true })
   } catch (error) {
