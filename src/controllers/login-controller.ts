@@ -10,7 +10,7 @@ export const login = async (
     const token = await loginUserService(reply.server, request.body);
     reply.setCookie("token", token, {
       httpOnly: true,
-      secure: true,
+      secure: false,
       maxAge: 24 * 60 * 60,
       sameSite: "lax",
       path: "/",
