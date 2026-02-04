@@ -5,7 +5,13 @@ const login_service_1 = require("../services/login-service");
 const loginAdmin = async (request, reply) => {
     try {
         const token = await (0, login_service_1.loginAdminService)(reply.server, request.body);
-        reply.code(200).send({ token });
+        reply.setCookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            maxAge: 24 * 60 * 60,
+            sameSite: "lax",
+            path: "/login",
+        }).send({ success: true });
     }
     catch (error) {
         const mensagem = error instanceof Error ? error.message : "Erro no login";
