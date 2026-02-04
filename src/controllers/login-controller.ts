@@ -13,7 +13,7 @@ export const login = async (
       secure: true,
       maxAge: 24 * 60 * 60,
       sameSite: "lax",
-      path: "/",
+      path: "/login",
     }).send({ success:true })
   } catch (error) {
     const MensagemDeError =
