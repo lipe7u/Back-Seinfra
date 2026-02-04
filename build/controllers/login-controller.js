@@ -5,12 +5,12 @@ const login_service_1 = require("../services/login-service");
 const login = async (request, reply) => {
     try {
         const token = await (0, login_service_1.loginUserService)(reply.server, request.body);
-        reply.setCookie("token", '', {
+        reply.setCookie("token", token, {
             httpOnly: true,
             secure: true,
             maxAge: 24 * 60 * 60,
             sameSite: "lax",
-            path: "/login",
+            path: "/",
         }).send({ success: true });
     }
     catch (error) {

@@ -8,12 +8,12 @@ export const login = async (
 ) => {
   try {
     const token = await loginUserService(reply.server, request.body);
-    reply.setCookie("token", '', {
+    reply.setCookie("token", token, {
       httpOnly: true,
       secure: true,
       maxAge: 24 * 60 * 60,
       sameSite: "lax",
-      path: "/login",
+      path: "/",
     }).send({ success:true })
   } catch (error) {
     const MensagemDeError =
