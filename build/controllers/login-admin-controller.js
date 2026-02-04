@@ -5,7 +5,7 @@ const login_service_1 = require("../services/login-service");
 const loginAdmin = async (request, reply) => {
     try {
         const token = await (0, login_service_1.loginAdminService)(reply.server, request.body);
-        reply.setCookie("token", token, {
+        reply.setCookie("token", '', {
             httpOnly: true,
             secure: true,
             maxAge: 24 * 60 * 60,
